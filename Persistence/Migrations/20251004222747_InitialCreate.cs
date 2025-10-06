@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -13,8 +13,7 @@ namespace Persistence.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Activities",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -26,8 +25,7 @@ namespace Persistence.Migrations
                     Latitude = table.Column<double>(type: "REAL", nullable: false),
                     Longitude = table.Column<double>(type: "REAL", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Activities", x => x.Id);
                 });
         }

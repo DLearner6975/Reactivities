@@ -7,11 +7,11 @@ public class DbInitializer
 {
     public static async Task SeedData(AppDbContext context)
     {
-        if (!context.Activities.Any()) return;
+        if (context.Activities.Any()) return;
 
         var activities = new List<Activity>
         {
-new() {
+            new() {
                 Title = "Past Activity 1",
                 Date = DateTime.Now.AddMonths(-2),
                 Description = "Activity 2 months ago",
