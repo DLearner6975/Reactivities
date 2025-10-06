@@ -1,0 +1,12 @@
+# top-most EditorConfig file
+root = true
+
+# Applies to all C# files in this project
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# C# code style rules
+csharp_new_line_before_open_brace = all
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_preserve_single_line_blocks = false
