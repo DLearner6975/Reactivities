@@ -28,7 +28,7 @@ charset = utf-8
 
 # Bracing Style (Allman for methods/blocks, K&R for objects/initializers)
 # Puts { on a new line for types, methods, properties, and control flow blocks (if/while/for/etc.)
-csharp_new_line_before_open_brace = methods, properties, control_blocks, types
+# csharp_new_line_before_open_brace = methods, properties, control_blocks, types
 
 # Newline control for block keywords
 csharp_new_line_before_else = true
