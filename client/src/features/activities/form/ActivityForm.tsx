@@ -40,13 +40,10 @@ export default function ActivityForm() {
         const flattenedData = { ...rest, ...location };
         try {
             if (activity) {
-                flattenedData.id = activity.id;
-                await updateActivity.mutateAsync(
-                    { ...activity, ...flattenedData },
-                    {
-                        onSuccess: () => navigate(`/activities/${activity.id}`),
-                    }
-                );
+                const updateData = { ...activity, ...flattenedData };
+                await updateActivity.mutateAsync(updateData, {
+                    onSuccess: () => navigate(`/activities/${activity.id}`),
+                });
             } else {
                 createActivity.mutate(flattenedData as unknown as Activity, {
                     onSuccess: (id) => navigate(`/activities/${id}`),

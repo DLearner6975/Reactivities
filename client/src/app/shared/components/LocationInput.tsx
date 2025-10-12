@@ -2,14 +2,12 @@ import {
     Box,
     debounce,
     List,
-    ListItem,
     ListItemButton,
     TextField,
     Typography,
     type TextFieldProps,
 } from "@mui/material";
 import axios from "axios";
-import { fi, se } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 import {
     type FieldValues,
@@ -25,10 +23,9 @@ export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState<LocationIQSuggestion[]>([]);
     const [inputValue, setInputValue] = useState(field.value || "");
-    console.log("🚀 ~ LocationInput ~ inputValue:", inputValue);
 
     useEffect(() => {
-        if (field.value && typeof inputValue === "object") {
+        if (field.value && typeof field.value === "object") {
             setInputValue(field.value.venue || "");
         } else {
             setInputValue(field.value || "");

@@ -1,12 +1,9 @@
 import type { FieldValues, UseControllerProps } from "react-hook-form";
-import {
-    DateTimePicker,
-    type DateTimePickerProps,
-} from "@mui/x-date-pickers/DateTimePicker";
+import { DateTimePicker, type DateTimePickerProps } from "@mui/x-date-pickers";
 import { useController } from "react-hook-form";
 
 type Props<T extends FieldValues> = {} & UseControllerProps<T> &
-    DateTimePickerProps<Date>;
+    DateTimePickerProps;
 
 export default function DateTimeInput<T extends FieldValues>(props: Props<T>) {
     const { field, fieldState } = useController({ ...props });
