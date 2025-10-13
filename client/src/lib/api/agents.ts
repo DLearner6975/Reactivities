@@ -11,6 +11,7 @@ const sleep = (delay: number) => {
 
 const agent = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
     },
@@ -30,7 +31,7 @@ agent.interceptors.response.use(
     async (error) => {
         await sleep(1000);
         store.uiStore.isIdle();
-        const { status, data } = error;
+        const { status, data } = error.response;
         switch (status) {
             case 400:
                 if (data.errors) {
