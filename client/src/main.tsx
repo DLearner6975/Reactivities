@@ -9,11 +9,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider } from "react-router";
-import { router } from "./app/layout/router/Routes.tsx";
 import { store, StoreContext } from "./lib/stores/store.ts";
 import { ToastContainer } from "react-toastify";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { router } from "./app/router/Routes.tsx";
 
 const queryClient = new QueryClient();
 
