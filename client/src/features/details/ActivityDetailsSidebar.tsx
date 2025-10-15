@@ -13,7 +13,6 @@ import {
 type Props = { activity: Activity };
 
 export default function ActivityDetailsSidebar({ activity }: Props) {
-    const { isHost } = activity;
     const following = true;
 
     return (
