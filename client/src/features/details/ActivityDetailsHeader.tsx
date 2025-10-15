@@ -1,16 +1,34 @@
-import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
+import {
+    Card,
+    CardMedia,
+    Box,
+    Typography,
+    Button,
+    useTheme,
+    Chip,
+} from "@mui/material";
 import { Link } from "react-router";
 import { formatDate } from "../../lib/util/util";
+import { useActivities } from "../../lib/hooks/useActivities";
 
 type Props = {
     activity: Activity;
 };
 
 export default function ActivityDetailsHeader({ activity }: Props) {
-    const isCancelled = false;
-    const isHost = true;
-    const isGoing = true;
-    const loading = false;
+    const { updateAttendance } = useActivities(activity.id);
+    const theme = useTheme();
+    const {
+        id,
+        isGoing,
+        isHost,
+        isCancelled,
+        hostDisplayName,
+        hostId,
+        date,
+        category,
+        title,
+    } = activity;
 
     return (
         <Card
@@ -22,22 +40,23 @@ export default function ActivityDetailsHeader({ activity }: Props) {
             }}
         >
             {isCancelled && (
-                <Badge
+                <Chip
                     sx={{
                         position: "absolute",
                         left: 40,
                         top: 20,
                         zIndex: 1000,
+                        borderRadius: 1,
                     }}
                     color="error"
-                    badgeContent="Cancelled"
+                    label="Cancelled"
                 />
             )}
             <CardMedia
                 component="img"
                 height="300"
-                image={`/images/categoryImages/${activity.category}.jpg`}
-                alt={`${activity.category} image`}
+                image={`/images/categoryImages/${category}.jpg`}
+                alt={`${category} image`}
             />
             <Box
                 sx={{
@@ -58,18 +77,18 @@ export default function ActivityDetailsHeader({ activity }: Props) {
                 {/* Text Section */}
                 <Box>
                     <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                        {activity?.title}
+                        {title}
                     </Typography>
                     <Typography variant="subtitle1">
-                        {formatDate(activity.date)}
+                        {formatDate(date)}
                     </Typography>
                     <Typography variant="subtitle2">
                         Hosted by{" "}
                         <Link
-                            to={`/profiles/username`}
+                            to={`/profiles/${hostId}`}
                             style={{ color: "white", fontWeight: "bold" }}
                         >
-                            Bob
+                            {hostDisplayName}
                         </Link>
                     </Typography>
                 </Box>
@@ -81,7 +100,15 @@ export default function ActivityDetailsHeader({ activity }: Props) {
                             <Button
                                 variant="contained"
                                 color={isCancelled ? "success" : "error"}
-                                onClick={() => {}}
+                                onClick={() => updateAttendance.mutate(id)}
+                                disabled={updateAttendance.isPending}
+                                sx={{
+                                    "&.Mui-disabled": {
+                                        backgroundColor:
+                                            theme.palette.grey[600],
+                                        color: theme.palette.text.disabled,
+                                    },
+                                }}
                             >
                                 {isCancelled
                                     ? "Re-activate Activity"
@@ -91,8 +118,15 @@ export default function ActivityDetailsHeader({ activity }: Props) {
                                 variant="contained"
                                 color="primary"
                                 component={Link}
-                                to={`/manage/${activity.id}`}
+                                to={`/manage/${id}`}
                                 disabled={isCancelled}
+                                sx={{
+                                    "&.Mui-disabled": {
+                                        backgroundColor:
+                                            theme.palette.grey[600],
+                                        color: theme.palette.text.disabled,
+                                    },
+                                }}
                             >
                                 Manage Event
                             </Button>
@@ -101,8 +135,14 @@ export default function ActivityDetailsHeader({ activity }: Props) {
                         <Button
                             variant="contained"
                             color={isGoing ? "primary" : "info"}
-                            onClick={() => {}}
-                            disabled={isCancelled || loading}
+                            onClick={() => updateAttendance.mutate(id)}
+                            disabled={updateAttendance.isPending || isCancelled}
+                            sx={{
+                                "&.Mui-disabled": {
+                                    backgroundColor: theme.palette.grey[600],
+                                    color: theme.palette.text.disabled,
+                                },
+                            }}
                         >
                             {isGoing ? "Cancel Attendance" : "Join Activity"}
                         </Button>
