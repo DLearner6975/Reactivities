@@ -11,4 +11,5 @@ public class User : IdentityUser
 
     // Navigation properties
     public virtual ICollection<ActivityAttendee> Activities { get; set; } = [];
+    public virtual ICollection<Photo> Photos { get; set; } = [];
 }

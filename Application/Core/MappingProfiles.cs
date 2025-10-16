@@ -21,15 +21,7 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Bio, o => o.MapFrom(s => s.User.Bio))
             .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.User.ImageUrl))
             .ForMember(d => d.Id, o => o.MapFrom(s => s.User.Id));
-
-        // .ForMember(d => d.HostId, o => o.MapFrom(s => s.Host.Id))
-        // .ForMember(d => d.Attendees, o => o.MapFrom(s => s.Attendees.Select(a => a.AppUser).Select(u => new Profiles.DTOs.UserProfile
-        // {
-        //     Id = u.Id,
-        //     DisplayName = u.DisplayName,
-        //     Bio = u.Bio,
-        //     ImageUrl = u.Photos.FirstOrDefault(p => p.IsMain).Url
-        // })));
+        CreateMap<User, UserProfile>();
 
     }
 }
