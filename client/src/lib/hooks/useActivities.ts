@@ -16,13 +16,20 @@ export const useActivities = (id?: string) => {
         },
         enabled: !id && location.pathname === "/activities" && !!currentUser,
         select: (data) => {
-            return data.map((activity) => ({
-                ...activity,
-                isHost: currentUser?.id === activity.hostId,
-                isGoing: activity.attendees.some(
-                    (x) => currentUser?.id === x.id
-                ),
-            }));
+            return data.map((activity) => {
+                const host = activity.attendees.find(
+                    (x) => x.id === activity.hostId
+                );
+
+                return {
+                    ...activity,
+                    isHost: currentUser?.id === activity.hostId,
+                    isGoing: activity.attendees.some(
+                        (x) => currentUser?.id === x.id
+                    ),
+                    hostImageUrl: host?.imageUrl,
+                };
+            });
         },
     });
 
@@ -33,11 +40,15 @@ export const useActivities = (id?: string) => {
             return response.data;
         },
         enabled: !!id && !!currentUser,
-        select: (data) => ({
-            ...data,
-            isHost: currentUser?.id === data.hostId,
-            isGoing: data.attendees.some((x) => currentUser?.id === x.id),
-        }),
+        select: (data) => {
+            const host = data.attendees.find((x) => x.id === data.hostId);
+            return {
+                ...data,
+                isHost: currentUser?.id === data.hostId,
+                isGoing: data.attendees.some((x) => currentUser?.id === x.id),
+                hostImageUrl: host?.imageUrl,
+            };
+        },
     });
 
     const updateActivity = useMutation({
