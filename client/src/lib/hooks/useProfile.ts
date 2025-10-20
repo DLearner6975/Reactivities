@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agents from "../api/agents";
 import { useMemo } from "react";
 
-export const useProfile = (id?: string) => {
+export const useProfile = (id?: string, predicate?: string) => {
     const queryClient = useQueryClient();
 
     const { data: profile, isLoading: loadingProfile } = useQuery({
@@ -11,10 +11,10 @@ export const useProfile = (id?: string) => {
             const response = await agents.get<Profile>(`/profiles/${id}`);
             return response.data;
         },
-        enabled: !!id,
+        enabled: !!id && !predicate,
     });
 
-    const { data: photos, isLoading: loadingPhotos } = useQuery({
+    const { data: photos, isLoading: loadingPhotos } = useQuery<Photo[]>({
         queryKey: ["photos", id],
         queryFn: async () => {
             const response = await agents.get<Photo[]>(
@@ -22,7 +22,20 @@ export const useProfile = (id?: string) => {
             );
             return response.data;
         },
-        enabled: !!id,
+        enabled: !!id && !predicate,
+    });
+
+    const { data: followings, isLoading: loadingFollowings } = useQuery<
+        Profile[]
+    >({
+        queryKey: ["followings", id, predicate],
+        queryFn: async () => {
+            const response = await agents.get<Profile[]>(
+                `/profiles/${id}/follow-list?predicate=${predicate}`
+            );
+            return response.data;
+        },
+        enabled: !!id && !!predicate,
     });
 
     const uploadPhoto = useMutation({
@@ -81,6 +94,31 @@ export const useProfile = (id?: string) => {
         },
     });
 
+    const updateFollowing = useMutation({
+        mutationFn: async () => {
+            await agents.post(`/profiles/${id}/follow`);
+        },
+        onSuccess: async () => {
+            await queryClient.setQueryData(
+                ["profile", id],
+                (profile: Profile) => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["followings", id, "followers"],
+                    });
+                    if (!profile || profile.followersCount === undefined)
+                        return profile;
+                    return {
+                        ...profile,
+                        following: !profile.following,
+                        followersCount: profile.following
+                            ? profile.followersCount - 1
+                            : profile.followersCount + 1,
+                    };
+                }
+            );
+        },
+    });
+
     const isCurrentUser = useMemo(() => {
         return id === queryClient.getQueryData<User>(["user"])?.id;
     }, [id, queryClient]);
@@ -94,5 +132,8 @@ export const useProfile = (id?: string) => {
         uploadPhoto,
         setMainPhoto,
         deletePhoto,
+        updateFollowing,
+        followings,
+        loadingFollowings,
     };
 };
