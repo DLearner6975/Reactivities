@@ -9,6 +9,7 @@ import {
     ListItemText,
     Grid,
 } from "@mui/material";
+import { Link } from "react-router";
 
 type Props = { activity: Activity };
 
@@ -38,7 +39,10 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                                     flexDirection: "column",
                                 }}
                             >
-                                <ListItem>
+                                <ListItem
+                                    component={Link}
+                                    to={`/profiles/${attendee.id}`}
+                                >
                                     <ListItemAvatar>
                                         <Avatar
                                             variant="rounded"

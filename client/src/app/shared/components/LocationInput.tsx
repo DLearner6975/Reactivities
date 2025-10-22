@@ -47,7 +47,8 @@ export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     };
 
     const locationUrl = `https://api.locationiq.com/v1/autocomplete?key=${
-        import.meta.env.VITE_LocationIQ_API_KEY
+        import.meta.env.VITE_LocationIQ_API_KEY ||
+        "pk.b6d8716994d22138ee406c3989a514a1"
     }&limit=5&dedupe=1&`;
 
     const fetchSuggestions = useMemo(
