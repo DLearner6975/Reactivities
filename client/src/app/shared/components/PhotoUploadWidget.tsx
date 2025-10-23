@@ -2,8 +2,14 @@ import { CloudUpload } from "@mui/icons-material";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import Cropper, { type ReactCropperElement } from "react-cropper";
-// import "cropperjs/dist/cropper.css";
+import {
+    Cropper,
+    CropperPreview,
+    CircleStencil,
+    type CropperRef,
+    type CropperPreviewRef,
+} from "react-advanced-cropper";
+import "react-advanced-cropper/dist/style.css";
 
 type Props = {
     uploadPhoto: (file: Blob) => void;
@@ -12,7 +18,8 @@ type Props = {
 
 export default function PhotoUploadWidget({ uploadPhoto, loading }: Props) {
     const [files, setFiles] = useState<object & { preview: string }[]>([]);
-    const cropperRef = useRef<ReactCropperElement>(null);
+    const cropperRef = useRef<CropperRef>(null);
+    const previewRef = useRef<CropperPreviewRef>(null);
 
     useEffect(() => {
         return () => {
@@ -31,11 +38,17 @@ export default function PhotoUploadWidget({ uploadPhoto, loading }: Props) {
     }, []);
 
     const onCrop = useCallback(() => {
-        const cropper = cropperRef.current?.cropper;
-        cropper?.getCroppedCanvas().toBlob((blob) => {
-            uploadPhoto(blob as Blob);
+        const canvas = cropperRef.current?.getCanvas?.();
+        canvas?.toBlob((blob) => {
+            if (blob) uploadPhoto(blob);
         });
     }, [uploadPhoto]);
+
+    const handleUpdate = useCallback(() => {
+        if (cropperRef.current && previewRef.current) {
+            previewRef.current.update(cropperRef.current);
+        }
+    }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
@@ -69,16 +82,13 @@ export default function PhotoUploadWidget({ uploadPhoto, loading }: Props) {
                 </Typography>
                 {files[0]?.preview && (
                     <Cropper
-                        src={files[0]?.preview}
-                        style={{ height: 300, width: "90%" }}
-                        initialAspectRatio={1}
-                        aspectRatio={1}
-                        preview=".img-preview"
-                        guides={false}
-                        viewMode={1}
-                        background={false}
-                        checkOrientation={false}
                         ref={cropperRef}
+                        src={files[0]?.preview}
+                        className="cropper"
+                        style={{ height: 300, width: "90%" }}
+                        stencilProps={{ aspectRatio: 1 }}
+                        stencilComponent={CircleStencil}
+                        onUpdate={handleUpdate}
                     />
                 )}
             </Grid>
@@ -88,7 +98,8 @@ export default function PhotoUploadWidget({ uploadPhoto, loading }: Props) {
                         <Typography variant="overline" color="secondary">
                             Step 3 - Preview & upload
                         </Typography>
-                        <div
+                        <CropperPreview
+                            ref={previewRef}
                             className="img-preview"
                             style={{
                                 width: 300,
